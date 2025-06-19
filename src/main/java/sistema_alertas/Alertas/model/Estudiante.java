@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,10 +87,11 @@ public class Estudiante {
     @OneToMany(mappedBy = "estudiante")
     private List<Consulta> consultas;
 
+   
+
     public Estudiante() {
     }
 
-  
     public Estudiante(
             String tipoDoc, String nroDoc, String nombres, String apellidos, String genero,
             String fechaNac, String direccion, String barrio, String estrato, String sisben,
