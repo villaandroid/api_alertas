@@ -1,5 +1,7 @@
 package sistema_alertas.Alertas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,10 +16,11 @@ public class Antecedente {
     @Column(name = "ESTU_ID")
     private Integer id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "ESTU_ID")
-    private Estudiante estudiante;
+   @OneToOne
+@MapsId
+@JoinColumn(name = "ESTU_ID")
+@JsonIgnore
+private Estudiante estudiante;
 
     @Column(name = "ANTE_SALUD")
     private String salud;

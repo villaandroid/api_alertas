@@ -5,9 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import sistema_alertas.Alertas.model.Antecedente;
 
+import java.util.List;
 
-import java.util.Optional;
 
 public interface AntecedenteRepository extends JpaRepository<Antecedente, Integer> {
-    Optional<Antecedente> findByEstudianteId(Integer estudianteId);
+    List<Antecedente> findByEstudianteId(Integer estudianteId);
+
 }

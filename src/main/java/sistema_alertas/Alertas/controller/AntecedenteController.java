@@ -1,5 +1,7 @@
 package sistema_alertas.Alertas.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +17,13 @@ public class AntecedenteController {
     private AntecedenteService service;
 
    @GetMapping("/estudiante/{id}")
-public ResponseEntity<Antecedente> obtenerPorEstudiante(@PathVariable Integer id) {
-    Antecedente antecedentes = service.obtenerPorEstudiante(id);
-    if (antecedentes == null) {
-        return ResponseEntity.notFound().build(); 
+public ResponseEntity<List<Antecedente>> obtenerPorEstudiante(@PathVariable Integer id) {
+    List<Antecedente> antecedentes = service.obtenerTodosPorEstudiante(id);
+    if (antecedentes.isEmpty()) {
+        return ResponseEntity.noContent().build();
     }
     return ResponseEntity.ok(antecedentes);
 }
-
     @PostMapping
     public ResponseEntity<Antecedente> crear(@RequestBody Antecedente antecedente) {
         return ResponseEntity.ok(service.guardar(antecedente));

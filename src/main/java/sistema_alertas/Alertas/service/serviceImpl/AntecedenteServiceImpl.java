@@ -6,6 +6,7 @@ import sistema_alertas.Alertas.model.Antecedente;
 import sistema_alertas.Alertas.repository.AntecedenteRepository;
 import sistema_alertas.Alertas.service.AntecedenteService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,9 +15,9 @@ public class AntecedenteServiceImpl implements AntecedenteService {
     @Autowired
     private AntecedenteRepository repository;
 
-   @Override
-public Antecedente obtenerPorEstudiante(Integer estudianteId) {
-    return repository.findByEstudianteId(estudianteId).orElse(null);
+@Override
+public List<Antecedente> obtenerTodosPorEstudiante(Integer estudianteId) {
+    return repository.findByEstudianteId(estudianteId);
 }
 
     @Override
