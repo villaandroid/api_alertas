@@ -19,38 +19,40 @@ public class ConsultaController {
     @Autowired
     private ConsultaService consultaService;
     @Autowired
-private SeguimientoService seguimientoService;
+    private SeguimientoService seguimientoService;
 
-@GetMapping
-public List<ConsultaConEstadoDTO> obtenerTodas() {
-    List<Consulta> consultas = consultaService.obtenerTodas();
+    @GetMapping
+    public List<ConsultaConEstadoDTO> obtenerTodas() {
+        List<Consulta> consultas = consultaService.obtenerTodas();
 
-    return consultas.stream().map(consulta -> {
-        String estado = "Sin seguimiento";
-        if (seguimientoService.obtenerUltimoSeguimiento(consulta.getId()) != null) {
-            estado = seguimientoService.obtenerUltimoSeguimiento(consulta.getId()).getEstado();
-        }
+        return consultas.stream().map(consulta -> {
+            String estado = "Sin seguimiento";
+            if (seguimientoService.obtenerUltimoSeguimiento(consulta.getId()) != null) {
+                estado = seguimientoService.obtenerUltimoSeguimiento(consulta.getId()).getEstado();
+            }
 
-        return new ConsultaConEstadoDTO(
-                consulta.getId(),
+            return new ConsultaConEstadoDTO(
+                    consulta.getId(),
 
-                consulta.getEstudiante().getId(),
-                consulta.getEstudiante().getNombres(),
-                consulta.getEstudiante().getApellidos(),
-                consulta.getEstudiante().getNroDoc(),
+                    consulta.getEstudiante().getId(),
+                    consulta.getEstudiante().getNombres(),
+                    consulta.getEstudiante().getApellidos(),
+                    consulta.getEstudiante().getNroDoc(),
 
-                consulta.getDocente().getId(),
-                consulta.getDocente().getNombres(),
-                consulta.getDocente().getApellidos(),
+                    consulta.getDocente().getId(),
+                    consulta.getDocente().getNombres(),
+                    consulta.getDocente().getApellidos(),
 
-                consulta.getFecha(),
-                consulta.getMotivo(),
-                consulta.getDescargos(),
-                consulta.getAlerta(),
-                estado
-        );
-    }).toList();
-}
+                    consulta.getFecha(),
+                    consulta.getMotivo(),
+                    consulta.getDescargos(),
+                    consulta.getAlerta(),
+                    estado,
+
+                    consulta.getPresenciaEstudiante(),
+                    consulta.getMetodoValidacion().name());
+        }).toList();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Consulta> obtenerPorId(@PathVariable Integer id) {

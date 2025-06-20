@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import sistema_alertas.Alertas.model.Estudiante;
 import sistema_alertas.Alertas.repository.EstudianteRepository;
-
 import sistema_alertas.Alertas.service.EstudianteService;
 
 @Service
@@ -17,13 +16,13 @@ public class EstudianteServiceImpl implements EstudianteService {
     @Autowired
     private EstudianteRepository repository;
 
-@Override
-public List<Estudiante> obtenerTodos() {
-    return repository.findAll(
-        Sort.by(Sort.Direction.ASC, "nombres")
-            .and(Sort.by(Sort.Direction.ASC, "apellidos"))
-    );
-}
+    @Override
+    public List<Estudiante> obtenerTodos() {
+        return repository.findAll(
+            Sort.by(Sort.Direction.ASC, "nombres")
+                .and(Sort.by(Sort.Direction.ASC, "apellidos"))
+        );
+    }
 
     @Override
     public Estudiante obtenerPorId(Integer id) {
@@ -58,7 +57,9 @@ public List<Estudiante> obtenerTodos() {
                 datos.getTiempo(),
                 datos.getNroHnos(),
                 datos.getTipoVivienda(),
-                datos.getImagen());
+                datos.getImagen(),
+                datos.getHuellaHash() 
+        );
 
         return repository.save(nuevo);
     }
@@ -90,7 +91,9 @@ public List<Estudiante> obtenerTodos() {
                 datos.getTiempo(),
                 datos.getNroHnos(),
                 datos.getTipoVivienda(),
-                datos.getImagen());
+                datos.getImagen(),
+                datos.getHuellaHash() 
+        );
 
         actualizado.setId(id);
 

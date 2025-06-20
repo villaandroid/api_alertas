@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+
 @Entity
 @Table(name = "consultas")
 @Getter
@@ -24,8 +25,8 @@ public class Consulta {
     @JoinColumn(name = "DOCE_ID", referencedColumnName = "DOCE_ID")
     private Docente docente;
 
-    @Column(name = "CONS_FECHA")
-    @Temporal(TemporalType.DATE)
+    @Column(name = "CONS_FECHA", insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
     @Column(name = "CONS_MOTIVO")
@@ -37,16 +38,25 @@ public class Consulta {
     @Column(name = "CONS_ALERTA")
     private String alerta;
 
+    @Column(name = "ESTU_PRESENCIAL")
+    private Boolean presenciaEstudiante = false;
 
-    public Consulta() {}
+    @Column(name = "ESTU_VALIDACION")
+    @Enumerated(EnumType.STRING)
+    private MetodoValidacion metodoValidacion = MetodoValidacion.NINGUNO;
 
-    public Consulta(Estudiante estudiante, Docente docente, Date fecha, String motivo, String descargos, String alerta) {
+    public Consulta() {
+    }
+
+    public Consulta(
+            Estudiante estudiante, Docente docente, String motivo,
+            String descargos, String alerta, Boolean presenciaEstudiante, MetodoValidacion metodoValidacion) {
         this.estudiante = estudiante;
         this.docente = docente;
-        this.fecha = fecha;
         this.motivo = motivo;
         this.descargos = descargos;
         this.alerta = alerta;
+        this.presenciaEstudiante = presenciaEstudiante;
+        this.metodoValidacion = metodoValidacion;
     }
-   
 }

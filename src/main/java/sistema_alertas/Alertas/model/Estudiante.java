@@ -1,10 +1,7 @@
 package sistema_alertas.Alertas.model;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -83,20 +80,21 @@ public class Estudiante {
     @Column(name = "ESTU_IMAGEN")
     private byte[] imagen;
 
+    @Column(name = "ESTU_HUELLA_HASH", unique = true)
+    private String huellaHash;
+
     @JsonIgnore
     @OneToMany(mappedBy = "estudiante")
     private List<Consulta> consultas;
 
-   
-
-    public Estudiante() {
-    }
+    public Estudiante() {}
 
     public Estudiante(
-            String tipoDoc, String nroDoc, String nombres, String apellidos, String genero,
-            String fechaNac, String direccion, String barrio, String estrato, String sisben,
-            String eps, String rh, String acudiente, String tel, String sms, String curso,
-            String estadoCivil, String tiempo, String nroHnos, String tipoVivienda, byte[] imagen) {
+        String tipoDoc, String nroDoc, String nombres, String apellidos, String genero,
+        String fechaNac, String direccion, String barrio, String estrato, String sisben,
+        String eps, String rh, String acudiente, String tel, String sms, String curso,
+        String estadoCivil, String tiempo, String nroHnos, String tipoVivienda, byte[] imagen, String huellaHash
+    ) {
         this.tipoDoc = tipoDoc;
         this.nroDoc = nroDoc;
         this.nombres = nombres;
@@ -118,6 +116,6 @@ public class Estudiante {
         this.nroHnos = nroHnos;
         this.tipoVivienda = tipoVivienda;
         this.imagen = imagen;
+        this.huellaHash = huellaHash;
     }
-
 }

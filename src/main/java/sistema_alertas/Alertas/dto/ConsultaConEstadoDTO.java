@@ -28,4 +28,8 @@ public class ConsultaConEstadoDTO {
     private String descargos;
     private String alerta;
     private String estado;
+
+    // 🆕 Nuevos campos
+    private Boolean presenciaEstudiante;
+    private String metodoValidacion;
 }

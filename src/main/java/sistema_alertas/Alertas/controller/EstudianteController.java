@@ -41,17 +41,12 @@ public class EstudianteController {
             return ResponseEntity.notFound().build();
         }
     }
+@GetMapping("/buscar")
+public ResponseEntity<List<Estudiante>> buscarEstudiante(@RequestParam String valor) {
+    valor = valor.trim();
+    return ResponseEntity.ok(estudianteService.buscarPorNombre(valor));
+}
 
-    @GetMapping("/buscar")
-    public List<Estudiante> buscarPorNombreODocumento(
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String documento) {
-        if (nombre != null)
-            return estudianteService.buscarPorNombre(nombre);
-        if (documento != null)
-            return estudianteService.buscarPorDocumento(documento);
-        return estudianteService.obtenerTodos();
-    }
 
     @PostMapping
     public ResponseEntity<Estudiante> guardar(@RequestBody Estudiante datos) {

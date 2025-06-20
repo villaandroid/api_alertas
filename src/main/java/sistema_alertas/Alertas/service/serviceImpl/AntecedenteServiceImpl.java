@@ -15,10 +15,10 @@ public class AntecedenteServiceImpl implements AntecedenteService {
     @Autowired
     private AntecedenteRepository repository;
 
-@Override
-public List<Antecedente> obtenerTodosPorEstudiante(Integer estudianteId) {
-    return repository.findByEstudianteId(estudianteId);
-}
+    @Override
+    public List<Antecedente> obtenerTodosPorEstudiante(Integer estudianteId) {
+        return repository.findByEstudianteIdOrderByCategoriaIdAscFechaRegistroAsc(estudianteId);
+    }
 
     @Override
     public Antecedente guardar(Antecedente antecedente) {
@@ -26,18 +26,12 @@ public List<Antecedente> obtenerTodosPorEstudiante(Integer estudianteId) {
     }
 
     @Override
-    public Antecedente actualizar(Integer estudianteId, Antecedente nuevosDatos) {
-        Optional<Antecedente> existente = repository.findById(estudianteId);
+    public Antecedente actualizar(Integer id, Antecedente nuevosDatos) {
+        Optional<Antecedente> existente = repository.findById(id);
         if (existente.isPresent()) {
             Antecedente a = existente.get();
-            a.setSalud(nuevosDatos.getSalud());
-            a.setFortalecimiento(nuevosDatos.getFortalecimiento());
-            a.setReprobados(nuevosDatos.getReprobados());
-            a.setPersonales(nuevosDatos.getPersonales());
-            a.setFiliares(nuevosDatos.getFiliares());
-            a.setEducacion(nuevosDatos.getEducacion());
-            a.setSocioafectivo(nuevosDatos.getSocioafectivo());
-            a.setDisciplina(nuevosDatos.getDisciplina());
+            a.setDetalle(nuevosDatos.getDetalle());
+            a.setCategoria(nuevosDatos.getCategoria());
             return repository.save(a);
         }
         return null;

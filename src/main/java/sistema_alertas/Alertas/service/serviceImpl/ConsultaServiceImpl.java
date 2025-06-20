@@ -40,8 +40,6 @@ public class ConsultaServiceImpl implements ConsultaService {
         Consulta actual = obtenerPorId(id);
         if (actual == null)
             return null;
-
-        actual.setFecha(datos.getFecha());
         actual.setMotivo(datos.getMotivo());
         actual.setDescargos(datos.getDescargos());
         actual.setAlerta(datos.getAlerta());

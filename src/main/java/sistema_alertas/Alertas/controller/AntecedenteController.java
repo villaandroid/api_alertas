@@ -16,14 +16,15 @@ public class AntecedenteController {
     @Autowired
     private AntecedenteService service;
 
-   @GetMapping("/estudiante/{id}")
-public ResponseEntity<List<Antecedente>> obtenerPorEstudiante(@PathVariable Integer id) {
-    List<Antecedente> antecedentes = service.obtenerTodosPorEstudiante(id);
-    if (antecedentes.isEmpty()) {
-        return ResponseEntity.noContent().build();
+    @GetMapping("/estudiante/{id}")
+    public ResponseEntity<List<Antecedente>> obtenerPorEstudiante(@PathVariable Integer id) {
+        List<Antecedente> antecedentes = service.obtenerTodosPorEstudiante(id);
+        if (antecedentes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(antecedentes);
     }
-    return ResponseEntity.ok(antecedentes);
-}
+
     @PostMapping
     public ResponseEntity<Antecedente> crear(@RequestBody Antecedente antecedente) {
         return ResponseEntity.ok(service.guardar(antecedente));
