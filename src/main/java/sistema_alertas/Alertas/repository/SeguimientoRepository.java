@@ -1,10 +1,13 @@
 package sistema_alertas.Alertas.repository;
 
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import sistema_alertas.Alertas.model.Seguimiento;
 
 public interface SeguimientoRepository extends JpaRepository<Seguimiento, Integer> {
-    List<Seguimiento> findByConsultaIdOrderByFechaDesc(Integer consultaId);
-    Seguimiento findTopByConsultaIdOrderByFechaDesc(Integer consultaId);
+
+    // Retorna el único seguimiento para una consulta (1 a 1)
+    Seguimiento findByConsultaId(Integer consultaId);
+
+    // Cuenta seguimientos por consulta (normalmente 0 o 1)
+    long countByConsultaId(Integer consultaId);
 }

@@ -8,8 +8,9 @@ import sistema_alertas.Alertas.dto.EstadisticasDTO;
 import sistema_alertas.Alertas.service.EstadisticaService;
 
 @RestController
-@RequestMapping("/api/estadisticas")
+@RequestMapping(value = "/api/estadisticas", produces = "application/json")
 @CrossOrigin(origins = "*")
+
 public class EstadisticaController {
 
     @Autowired

@@ -20,7 +20,7 @@ public class Antecedente {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANTE_ESTU_ID", nullable = false)
-    @JsonIgnore // 👈 esto evita que se devuelva el estudiante completo
+    @JsonIgnore // esto evita que se devuelva el estudiante completo
     private Estudiante estudiante;
 
     @ManyToOne

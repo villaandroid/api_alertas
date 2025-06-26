@@ -18,8 +18,9 @@ import sistema_alertas.Alertas.model.Familiar;
 import sistema_alertas.Alertas.service.FamiliarService;
 
 @RestController
-@RequestMapping("/api/familiares")
+@RequestMapping(value = "/api/familiares", produces = "application/json")
 @CrossOrigin(origins = "*")
+
 public class FamiliarController {
 
     @Autowired

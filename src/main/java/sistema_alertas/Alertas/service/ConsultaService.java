@@ -1,8 +1,9 @@
 package sistema_alertas.Alertas.service;
 
 import java.util.List;
-
+import sistema_alertas.Alertas.dto.ConsultaResumenDTO;
 import sistema_alertas.Alertas.model.Consulta;
+import sistema_alertas.Alertas.model.enums.ConsEstado;
 
 public interface ConsultaService {
 
@@ -21,4 +22,11 @@ public interface ConsultaService {
     List<Consulta> buscarPorEstudiante(Integer estuId);
 
     long contar();
+
+    long contarEstudiantesConConsultas();
+
+    List<ConsultaResumenDTO> obtenerConsultasSinSeguimiento();
+
+    public boolean actualizarEstado(Integer id, ConsEstado nuevoEstado);
+
 }

@@ -10,8 +10,9 @@ import sistema_alertas.Alertas.model.Docente;
 import sistema_alertas.Alertas.service.DocenteService;
 
 @RestController
-@RequestMapping("/api/docentes")
+@RequestMapping(value = "/api/docentes", produces = "application/json")
 @CrossOrigin(origins = "*")
+
 public class DocenteController {
 
     @Autowired
@@ -49,7 +50,8 @@ public class DocenteController {
                 datos.getTipoDoc(),
                 datos.getNroDoc(),
                 datos.getNombres(),
-                datos.getApellidos());
+                datos.getApellidos(),
+                datos.getCorreo());
         return ResponseEntity.ok(docenteService.guardar(nuevo));
     }
 

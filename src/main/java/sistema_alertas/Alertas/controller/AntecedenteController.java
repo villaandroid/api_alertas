@@ -9,7 +9,7 @@ import sistema_alertas.Alertas.model.Antecedente;
 import sistema_alertas.Alertas.service.AntecedenteService;
 
 @RestController
-@RequestMapping("/api/antecedentes")
+@RequestMapping(value = "/api/antecedentes", produces = "application/json")
 @CrossOrigin(origins = "*")
 public class AntecedenteController {
 

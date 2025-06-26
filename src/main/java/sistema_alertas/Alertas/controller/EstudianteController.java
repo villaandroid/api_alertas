@@ -3,6 +3,7 @@ package sistema_alertas.Alertas.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import sistema_alertas.Alertas.model.Estudiante;
 import sistema_alertas.Alertas.service.EstudianteService;
 
+import org.springframework.web.multipart.MultipartFile;
+
 @RestController
-@RequestMapping("/api/estudiantes")
+@RequestMapping(value = "/api/estudiantes", produces = "application/json")
 @CrossOrigin(origins = "*")
+
 public class EstudianteController {
 
     @Autowired
@@ -41,12 +45,12 @@ public class EstudianteController {
             return ResponseEntity.notFound().build();
         }
     }
-@GetMapping("/buscar")
-public ResponseEntity<List<Estudiante>> buscarEstudiante(@RequestParam String valor) {
-    valor = valor.trim();
-    return ResponseEntity.ok(estudianteService.buscarPorNombre(valor));
-}
 
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Estudiante>> buscarEstudiante(@RequestParam String valor) {
+        valor = valor.trim();
+        return ResponseEntity.ok(estudianteService.buscarPorNombre(valor));
+    }
 
     @PostMapping
     public ResponseEntity<Estudiante> guardar(@RequestBody Estudiante datos) {
@@ -76,6 +80,28 @@ public ResponseEntity<List<Estudiante>> buscarEstudiante(@RequestParam String va
     @GetMapping("/total")
     public long totalEstudiantes() {
         return estudianteService.contar();
+    }
+
+    @PostMapping("/{id}/imagen")
+    public ResponseEntity<?> subirImagen(@PathVariable Integer id, @RequestParam("archivo") MultipartFile archivo) {
+        String nombre = estudianteService.subirImagen(id, archivo);
+        return nombre != null ? ResponseEntity.ok("Imagen actualizada.")
+                : ResponseEntity.badRequest().body("Error al subir imagen.");
+    }
+
+    @DeleteMapping("/{id}/imagen")
+    public ResponseEntity<?> eliminarImagen(@PathVariable Integer id) {
+        boolean ok = estudianteService.eliminarImagen(id);
+        return ok ? ResponseEntity.ok("Imagen eliminada.") : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/imagen")
+    public ResponseEntity<byte[]> obtenerImagen(@PathVariable Integer id) {
+        byte[] imagen = estudianteService.obtenerImagen(id);
+        if (imagen == null)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imagen);
     }
 
 }

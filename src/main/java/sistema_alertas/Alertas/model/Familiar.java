@@ -13,11 +13,11 @@ public class Familiar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FAMI_ID") // Nueva clave primaria
+    @Column(name = "FAMI_ID") 
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "ESTU_ID") // Clave foránea hacia estudiantes
+    @JoinColumn(name = "ESTU_ID") 
     @JsonBackReference
     private Estudiante estudiante;
 

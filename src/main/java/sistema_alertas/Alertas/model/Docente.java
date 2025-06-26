@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -34,6 +36,13 @@ public class Docente {
     @Column(name = "DOCE_APELLIDOS")
     private String apellidos;
 
+    @Column(name = "DOCE_CORREO")
+    private String correo; 
+
+    @ManyToOne
+    @JoinColumn(name = "USUA_ID")
+    private Usuario usuario;
+
     @JsonIgnore
     @OneToMany(mappedBy = "docente")
     private List<Consulta> consultas;
@@ -41,12 +50,11 @@ public class Docente {
     public Docente() {
     }
 
-    public Docente(String tipoDoc, String nroDoc, String nombres, String apellidos) {
+    public Docente(String tipoDoc, String nroDoc, String nombres, String apellidos, String correo) {
         this.tipoDoc = tipoDoc;
         this.nroDoc = nroDoc;
         this.nombres = nombres;
         this.apellidos = apellidos;
+        this.correo = correo;
     }
-
-
 }

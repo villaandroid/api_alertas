@@ -3,6 +3,9 @@ package sistema_alertas.Alertas.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import sistema_alertas.Alertas.model.enums.ConsEstado;
+import sistema_alertas.Alertas.model.enums.MetodoValidacion;
+import sistema_alertas.Alertas.model.enums.NivelAlerta;
 
 import java.util.Date;
 
@@ -35,27 +38,32 @@ public class Consulta {
     @Column(name = "CONS_DESCARGOS")
     private String descargos;
 
-    @Column(name = "CONS_ALERTA")
-    private String alerta;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CONS_NIVEL_ALERTA")
+    private NivelAlerta nivel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CONS_ESTADO")
+    private ConsEstado estado = ConsEstado.pendiente;
 
     @Column(name = "ESTU_PRESENCIAL")
     private Boolean presenciaEstudiante = false;
 
-    @Column(name = "ESTU_VALIDACION")
     @Enumerated(EnumType.STRING)
+    @Column(name = "ESTU_VALIDACION")
     private MetodoValidacion metodoValidacion = MetodoValidacion.NINGUNO;
 
-    public Consulta() {
-    }
+    public Consulta() {}
 
-    public Consulta(
-            Estudiante estudiante, Docente docente, String motivo,
-            String descargos, String alerta, Boolean presenciaEstudiante, MetodoValidacion metodoValidacion) {
+    public Consulta(Estudiante estudiante, Docente docente, String motivo,
+                    String descargos, NivelAlerta nivel, ConsEstado estado,
+                    Boolean presenciaEstudiante, MetodoValidacion metodoValidacion) {
         this.estudiante = estudiante;
         this.docente = docente;
         this.motivo = motivo;
         this.descargos = descargos;
-        this.alerta = alerta;
+        this.nivel = nivel;
+        this.estado = estado;
         this.presenciaEstudiante = presenciaEstudiante;
         this.metodoValidacion = metodoValidacion;
     }

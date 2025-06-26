@@ -61,6 +61,9 @@ public class Estudiante {
     @Column(name = "ESTU_SMS")
     private String sms;
 
+    @Column(name = "ESTU_CORREO")
+private String correo;
+
     @Column(name = "ESTU_CURSO")
     private String curso;
 
@@ -76,9 +79,8 @@ public class Estudiante {
     @Column(name = "ESTU_TIPO_VIV")
     private String tipoVivienda;
 
-    @Lob
-    @Column(name = "ESTU_IMAGEN")
-    private byte[] imagen;
+    @Column(name = "ESTU_IMAGEN") 
+    private String imagen;
 
     @Column(name = "ESTU_HUELLA_HASH", unique = true)
     private String huellaHash;
@@ -87,35 +89,37 @@ public class Estudiante {
     @OneToMany(mappedBy = "estudiante")
     private List<Consulta> consultas;
 
-    public Estudiante() {}
+    public Estudiante() {
+    }
 
     public Estudiante(
-        String tipoDoc, String nroDoc, String nombres, String apellidos, String genero,
-        String fechaNac, String direccion, String barrio, String estrato, String sisben,
-        String eps, String rh, String acudiente, String tel, String sms, String curso,
-        String estadoCivil, String tiempo, String nroHnos, String tipoVivienda, byte[] imagen, String huellaHash
-    ) {
-        this.tipoDoc = tipoDoc;
-        this.nroDoc = nroDoc;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.genero = genero;
-        this.fechaNac = fechaNac;
-        this.direccion = direccion;
-        this.barrio = barrio;
-        this.estrato = estrato;
-        this.sisben = sisben;
-        this.eps = eps;
-        this.rh = rh;
-        this.acudiente = acudiente;
-        this.tel = tel;
-        this.sms = sms;
-        this.curso = curso;
-        this.estadoCivil = estadoCivil;
-        this.tiempo = tiempo;
-        this.nroHnos = nroHnos;
-        this.tipoVivienda = tipoVivienda;
-        this.imagen = imagen;
-        this.huellaHash = huellaHash;
-    }
+    String tipoDoc, String nroDoc, String nombres, String apellidos, String genero,
+    String fechaNac, String direccion, String barrio, String estrato, String sisben,
+    String eps, String rh, String acudiente, String tel, String sms, String correo,
+    String curso, String estadoCivil, String tiempo, String nroHnos, String tipoVivienda,
+    String imagen, String huellaHash) {
+    this.tipoDoc = tipoDoc;
+    this.nroDoc = nroDoc;
+    this.nombres = nombres;
+    this.apellidos = apellidos;
+    this.genero = genero;
+    this.fechaNac = fechaNac;
+    this.direccion = direccion;
+    this.barrio = barrio;
+    this.estrato = estrato;
+    this.sisben = sisben;
+    this.eps = eps;
+    this.rh = rh;
+    this.acudiente = acudiente;
+    this.tel = tel;
+    this.sms = sms;
+    this.correo = correo;
+    this.curso = curso;
+    this.estadoCivil = estadoCivil;
+    this.tiempo = tiempo;
+    this.nroHnos = nroHnos;
+    this.tipoVivienda = tipoVivienda;
+    this.imagen = imagen;
+    this.huellaHash = huellaHash;
+}
 }

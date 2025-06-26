@@ -21,26 +21,25 @@ public class Seguimiento {
     @JoinColumn(name = "CONS_ID", referencedColumnName = "CONS_ID")
     private Consulta consulta;
 
-    @Column(name = "SEGU_FECHA")
+    @ManyToOne
+    @JoinColumn(name = "PSIC_ID") 
+    private Psicorientador psicorientador;
+
+    @Column(name = "SEGU_FECHA_INICIO")
     @Temporal(TemporalType.DATE)
-    private Date fecha;
+    private Date fechaInicio;
 
-    @Column(name = "SEGU_SEGUIMIENTO")
-    private String seguimiento;
+    @Column(name = "SEGU_FECHA_FIN")
+    @Temporal(TemporalType.DATE)
+    private Date fechaFin;
 
-    @Column(name = "SEGU_OBS")
-    private String observaciones;
+    public Seguimiento() {
+    }
 
-    @Column(name = "estado")
-    private String estado;
-
-    public Seguimiento() {}
-
-    public Seguimiento(Consulta consulta, Date fecha, String seguimiento, String observaciones, String estado) {
+    public Seguimiento(Consulta consulta, Psicorientador psicorientador, Date fechaInicio, Date fechaFin) {
         this.consulta = consulta;
-        this.fecha = fecha;
-        this.seguimiento = seguimiento;
-        this.observaciones = observaciones;
-        this.estado = estado;
+        this.psicorientador = psicorientador;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 }
