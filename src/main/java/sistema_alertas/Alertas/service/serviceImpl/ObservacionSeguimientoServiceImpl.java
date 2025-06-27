@@ -18,7 +18,7 @@ public class ObservacionSeguimientoServiceImpl implements ObservacionSeguimiento
 
     @Override
     public List<ObservacionSeguimiento> obtenerPorSeguimiento(Integer seguimientoId) {
-     
+
         return repository.findBySeguimientoIdOrderByFechaAsc(seguimientoId);
     }
 
@@ -30,7 +30,8 @@ public class ObservacionSeguimientoServiceImpl implements ObservacionSeguimiento
     @Override
     public ObservacionSeguimiento actualizar(Integer id, ObservacionSeguimiento datos) {
         Optional<ObservacionSeguimiento> opt = repository.findById(id);
-        if (opt.isEmpty()) return null;
+        if (opt.isEmpty())
+            return null;
 
         ObservacionSeguimiento actual = opt.get();
         actual.setTexto(datos.getTexto());
@@ -42,7 +43,8 @@ public class ObservacionSeguimientoServiceImpl implements ObservacionSeguimiento
 
     @Override
     public boolean eliminar(Integer id) {
-        if (!repository.existsById(id)) return false;
+        if (!repository.existsById(id))
+            return false;
         repository.deleteById(id);
         return true;
     }

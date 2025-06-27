@@ -7,12 +7,9 @@ import org.springframework.stereotype.Service;
 import sistema_alertas.Alertas.dto.EstadisticasDTO;
 import sistema_alertas.Alertas.model.Consulta;
 import sistema_alertas.Alertas.model.Seguimiento;
-import sistema_alertas.Alertas.model.ObservacionSeguimiento;
 import sistema_alertas.Alertas.model.enums.ConsEstado;
-
 import sistema_alertas.Alertas.repository.ConsultaRepository;
 import sistema_alertas.Alertas.repository.SeguimientoRepository;
-import sistema_alertas.Alertas.repository.ObservacionSeguimientoRepository;
 import sistema_alertas.Alertas.service.EstadisticaService;
 
 @Service
@@ -24,8 +21,90 @@ public class EstadisticaServiceImpl implements EstadisticaService {
     @Autowired
     private SeguimientoRepository seguimientoRepository;
 
-    @Autowired
-    private ObservacionSeguimientoRepository observacionRepository;
+    private int contarPendientes(List<Consulta> consultas) {
+        int contador = 0;
+        for (int i = 0; i < consultas.size(); i++) {
+            Consulta c = consultas.get(i);
+            if (c.getEstado() != null && c.getEstado() == ConsEstado.pendiente) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    private int contarCompletadas(List<Consulta> consultas) {
+        int contador = 0;
+        for (int i = 0; i < consultas.size(); i++) {
+            Consulta c = consultas.get(i);
+            if (c.getEstado() != null && c.getEstado() == ConsEstado.completado) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    private Map<String, Integer> contarPorNivel(List<Consulta> consultas) {
+        Map<String, Integer> niveles = new HashMap<String, Integer>();
+        niveles.put("critico", 0);
+        niveles.put("alto", 0);
+        niveles.put("moderado", 0);
+        niveles.put("leve", 0);
+
+        for (int i = 0; i < consultas.size(); i++) {
+            Consulta c = consultas.get(i);
+            if (c.getNivel() != null) {
+                String nivel = c.getNivel().name();
+                int actual = niveles.get(nivel);
+                niveles.put(nivel, actual + 1);
+            }
+        }
+        return niveles;
+    }
+
+    private int contarSinSeguimiento(List<Consulta> consultas, List<Seguimiento> seguimientos) {
+        Set<Integer> consultasConSeguimiento = new HashSet<Integer>();
+
+        for (int i = 0; i < seguimientos.size(); i++) {
+            Seguimiento s = seguimientos.get(i);
+            if (s.getConsulta() != null) {
+                consultasConSeguimiento.add(s.getConsulta().getId());
+            }
+        }
+
+        int contador = 0;
+        for (int i = 0; i < consultas.size(); i++) {
+            Consulta c = consultas.get(i);
+            if (!consultasConSeguimiento.contains(c.getId())) {
+                contador++;
+            }
+        }
+
+        return contador;
+    }
+
+    private Map<String, Integer> contarConsultasPorMes(List<Consulta> consultas) {
+        String[] meses = {
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        };
+        Map<String, Integer> consultasPorMes = new LinkedHashMap<String, Integer>();
+        for (int i = 0; i < meses.length; i++) {
+            consultasPorMes.put(meses[i], 0);
+        }
+
+        for (int i = 0; i < consultas.size(); i++) {
+            Consulta c = consultas.get(i);
+            if (c.getFecha() != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(c.getFecha());
+                int mesIndex = cal.get(Calendar.MONTH);
+                String nombreMes = meses[mesIndex];
+                int actual = consultasPorMes.get(nombreMes);
+                consultasPorMes.put(nombreMes, actual + 1);
+            }
+        }
+        return consultasPorMes;
+    }
 
     @Override
     public EstadisticasDTO obtenerEstadisticas() {
@@ -35,51 +114,17 @@ public class EstadisticaServiceImpl implements EstadisticaService {
         EstadisticasDTO dto = new EstadisticasDTO();
 
         int totalAlertas = todasConsultas.size();
-        int pendientes = 0;
-        int completadas = 0;
-        int critico = 0;
-        int alto = 0;
-        int moderado = 0;
-        int leve = 0;
-        int mejoras = 0;
-        int sinSeguimiento = 0;
+        int pendientes = contarPendientes(todasConsultas);
+        int completadas = contarCompletadas(todasConsultas);
+        Map<String, Integer> niveles = contarPorNivel(todasConsultas);
+        int sinSeguimiento = contarSinSeguimiento(todasConsultas, todosSeguimientos);
+        Map<String, Integer> consultasPorMes = contarConsultasPorMes(todasConsultas);
 
-        Set<Integer> idsEstudiantes = new HashSet<>();
-        Set<Integer> consultasConSeguimiento = new HashSet<>();
-
-        for (Seguimiento s : todosSeguimientos) {
-            if (s.getConsulta() != null) {
-                consultasConSeguimiento.add(s.getConsulta().getId());
-
-                // Contar mejoras en observaciones asociadas
-                List<ObservacionSeguimiento> obsList = observacionRepository.findBySeguimientoIdOrderByFechaAsc(s.getId());
-                mejoras += obsList.stream()
-                        .filter(obs -> "mejora".equalsIgnoreCase(obs.getTexto()))
-                        .count();
-
-                // Contar estados pendientes y completados desde consulta
-                ConsEstado estadoConsulta = s.getConsulta().getEstado();
-                if (estadoConsulta != null) {
-                    if (estadoConsulta == ConsEstado.pendiente) pendientes++;
-                    else if (estadoConsulta == ConsEstado.completado) completadas++;
-                }
-            }
-        }
-
-        for (Consulta c : todasConsultas) {
+        Set<Integer> idsEstudiantes = new HashSet<Integer>();
+        for (int i = 0; i < todasConsultas.size(); i++) {
+            Consulta c = todasConsultas.get(i);
             if (c.getEstudiante() != null) {
                 idsEstudiantes.add(c.getEstudiante().getId());
-            }
-            if (c.getNivel() != null) {
-                switch (c.getNivel()) {
-                    case critico -> critico++;
-                    case alto -> alto++;
-                    case moderado -> moderado++;
-                    case leve -> leve++;
-                }
-            }
-            if (!consultasConSeguimiento.contains(c.getId())) {
-                sinSeguimiento++;
             }
         }
 
@@ -87,35 +132,17 @@ public class EstadisticaServiceImpl implements EstadisticaService {
         dto.setEstudiantesConAlertas(idsEstudiantes.size());
         dto.setAlertasPendientes(pendientes);
         dto.setAlertasCompletadas(completadas);
-        dto.setAlertasCritico(critico);
-        dto.setAlertasAlto(alto);
-        dto.setAlertasModerado(moderado);
-        dto.setAlertasLeve(leve);
-        dto.setAlertasMejoradas(mejoras);
+        dto.setAlertasCritico(niveles.get("critico"));
+        dto.setAlertasAlto(niveles.get("alto"));
+        dto.setAlertasModerado(niveles.get("moderado"));
+        dto.setAlertasLeve(niveles.get("leve"));
         dto.setAlertasSinSeguimiento(sinSeguimiento);
         dto.setPromedioPorMes(totalAlertas / 12.0);
-        dto.setPromedioPorEstudiante(idsEstudiantes.isEmpty() ? 0.0 : totalAlertas / (double) idsEstudiantes.size());
-
-        Map<String, Integer> consultasPorMes = new LinkedHashMap<>();
-        String[] meses = {
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        };
-        // Inicializar meses con 0
-        for (String mes : meses) {
-            consultasPorMes.put(mes, 0);
+        if (idsEstudiantes.size() == 0) {
+            dto.setPromedioPorEstudiante(0.0);
+        } else {
+            dto.setPromedioPorEstudiante(totalAlertas / (double) idsEstudiantes.size());
         }
-
-        for (Consulta c : todasConsultas) {
-            if (c.getFecha() != null) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(c.getFecha());
-                int mesIndex = cal.get(Calendar.MONTH);
-                String nombreMes = meses[mesIndex];
-                consultasPorMes.put(nombreMes, consultasPorMes.get(nombreMes) + 1);
-            }
-        }
-
         dto.setConsultasPorMes(consultasPorMes);
 
         return dto;

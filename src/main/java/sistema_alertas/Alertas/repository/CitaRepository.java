@@ -14,4 +14,5 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     List<Cita> findByPsicorientadorId(Integer psicId);
 
     List<Cita> findByFecha(Date fecha);
+    
 }

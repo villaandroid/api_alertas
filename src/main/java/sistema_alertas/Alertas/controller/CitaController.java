@@ -21,6 +21,7 @@ import sistema_alertas.Alertas.service.ConsultaService;
 import sistema_alertas.Alertas.service.ObservacionSeguimientoService;
 import sistema_alertas.Alertas.service.SeguimientoCitaService;
 import sistema_alertas.Alertas.service.SeguimientoService;
+
 @RestController
 @RequestMapping(value = "/api/citas", produces = "application/json")
 @CrossOrigin(origins = "*")
@@ -45,6 +46,9 @@ public class CitaController {
     public List<Cita> obtenerTodas() {
         return citaService.obtenerTodas();
     }
+
+
+    
 
     @GetMapping("/{id}")
     public ResponseEntity<Cita> obtenerPorId(@PathVariable Integer id) {
@@ -97,7 +101,7 @@ public class CitaController {
 
         Integer estudianteId = consultaOrigen.getEstudiante().getId();
 
-        // ✅ Verificar si ya existe una cita pendiente
+        // Verificar si ya existe una cita pendiente
         List<Cita> citasActivas = citaService.buscarPorEstudiante(estudianteId).stream()
                 .filter(c -> c.getEstado() == CitaEstado.pendiente)
                 .toList();
@@ -106,7 +110,7 @@ public class CitaController {
             return ResponseEntity.badRequest().body("Este estudiante ya tiene una cita pendiente");
         }
 
-        // ✅ Buscar todas las consultas pendientes o null
+        // Buscar todas las consultas pendientes o null
         List<Consulta> consultasRelacionadas = consultaService.buscarPorEstudiante(estudianteId).stream()
                 .filter(c -> c.getEstado() == null || c.getEstado() == ConsEstado.pendiente)
                 .toList();
@@ -149,7 +153,7 @@ public class CitaController {
                 seguimientoCitaService.guardarRelacion(citaGuardada.getId(), existente.get().getId());
             }
 
-            // ✅ Siempre actualizar el estado de la consulta
+            // Siempre actualizar el estado de la consulta
             c.setEstado(ConsEstado.en_cita);
             consultaService.guardar(c);
         }

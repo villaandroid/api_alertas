@@ -6,9 +6,9 @@ import com.twilio.type.PhoneNumber;
 
 public class ServicioSms {
 
-    private static final String SID_CUENTA = "oculto";
-    private static final String TOKEN_AUTORIZACION = "coulto";
-    private static final String NUMERO_TWILIO = "oculto";
+    private static final String SID_CUENTA = "";
+    private static final String TOKEN_AUTORIZACION = "";
+    private static final String NUMERO_TWILIO = "+16169843383";
 
     public static String enviarMensaje(String numeroDestino, String textoMensaje) {
         System.out.println("Accediendo al metodo enviarMensaje()");

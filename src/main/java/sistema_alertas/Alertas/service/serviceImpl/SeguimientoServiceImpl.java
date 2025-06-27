@@ -2,12 +2,15 @@ package sistema_alertas.Alertas.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import sistema_alertas.Alertas.model.Estudiante;
 import sistema_alertas.Alertas.model.Seguimiento;
 import sistema_alertas.Alertas.model.SeguimientoCita;
 import sistema_alertas.Alertas.repository.SeguimientoCitaRepository;
 import sistema_alertas.Alertas.repository.SeguimientoRepository;
 import sistema_alertas.Alertas.service.SeguimientoService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +53,10 @@ public class SeguimientoServiceImpl implements SeguimientoService {
     @Override
     public Optional<Seguimiento> obtenerPorId(Integer id) {
         return seguimientoRepository.findById(id);
+    }
+
+    @Override
+    public List<Estudiante> obtenerEstudiantesConSeguimientos() {
+        return seguimientoRepository.obtenerEstudiantesConSeguimientos();
     }
 }

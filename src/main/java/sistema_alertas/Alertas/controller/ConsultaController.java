@@ -29,17 +29,16 @@ public class ConsultaController {
             var estudiante = consulta.getEstudiante();
             var docente = consulta.getDocente();
             return new ConsultaResumenDTO(
-                consulta.getId(),
-                estudiante.getId(),
-                docente != null ? docente.getId() : null,
-                estudiante.getNombres() + " " + estudiante.getApellidos(),
-                estudiante.getCurso(),
-                estudiante.getImagen(),
-                consulta.getMotivo(),
-                consulta.getFecha(),
-                consulta.getEstado() != null ? consulta.getEstado().name() : null,
-                consulta.getNivel() != null ? consulta.getNivel().name() : null
-            );
+                    consulta.getId(),
+                    estudiante.getId(),
+                    docente != null ? docente.getId() : null,
+                    estudiante.getNombres() + " " + estudiante.getApellidos(),
+                    estudiante.getCurso(),
+                    estudiante.getImagen(),
+                    consulta.getMotivo(),
+                    consulta.getFecha(),
+                    consulta.getEstado() != null ? consulta.getEstado().name() : null,
+                    consulta.getNivel() != null ? consulta.getNivel().name() : null);
         }).toList();
     }
 
@@ -51,9 +50,11 @@ public class ConsultaController {
 
     @GetMapping("/buscar")
     public List<Consulta> buscarPorMotivo(@RequestParam(required = false) String motivo,
-                                          @RequestParam(required = false) Integer estudianteId) {
-        if (motivo != null) return consultaService.buscarPorMotivo(motivo);
-        if (estudianteId != null) return consultaService.buscarPorEstudiante(estudianteId);
+            @RequestParam(required = false) Integer estudianteId) {
+        if (motivo != null)
+            return consultaService.buscarPorMotivo(motivo);
+        if (estudianteId != null)
+            return consultaService.buscarPorEstudiante(estudianteId);
         return consultaService.obtenerTodas();
     }
 
@@ -69,14 +70,33 @@ public class ConsultaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Consulta> actualizar(@PathVariable Integer id, @RequestBody Consulta consulta) {
-        Consulta actualizada = consultaService.actualizar(id, consulta);
-        return actualizada != null ? ResponseEntity.ok(actualizada) : ResponseEntity.notFound().build();
+    public ResponseEntity<Consulta> actualizar(@PathVariable Integer id, @RequestBody Consulta nuevaConsulta) {
+        Consulta existente = consultaService.obtenerPorId(id);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (existente.getEstado() != null && !existente.getEstado().equals(ConsEstado.pendiente)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Consulta actualizada = consultaService.actualizar(id, nuevaConsulta);
+        return ResponseEntity.ok(actualizada);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Integer id) {
-        return consultaService.eliminar(id) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        Consulta existente = consultaService.obtenerPorId(id);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (existente.getEstado() != null && !existente.getEstado().equals(ConsEstado.pendiente)) {
+            return ResponseEntity.badRequest().body("Solo se puede eliminar una alerta en estado pendiente.");
+        }
+
+        boolean eliminado = consultaService.eliminar(id);
+        return eliminado ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
     }
 
     @GetMapping("/estudiante/{id}")
@@ -105,7 +125,8 @@ public class ConsultaController {
         try {
             ConsEstado estado = ConsEstado.valueOf(nuevoEstado.replace("\"", ""));
             Consulta consulta = consultaService.obtenerPorId(id);
-            if (consulta == null) return ResponseEntity.notFound().build();
+            if (consulta == null)
+                return ResponseEntity.notFound().build();
             consulta.setEstado(estado);
             consultaService.guardar(consulta);
             return ResponseEntity.ok().build();
@@ -115,27 +136,27 @@ public class ConsultaController {
     }
 
     private void enviarSmsAlEstudiante(Consulta consulta) {
-    try {
-        Integer estudianteId = consulta.getEstudiante().getId();
-        String telefono = estudianteRepository.obtenerSmsPorId(estudianteId);
-        String nombreCompleto = estudianteRepository.obtenerNombreCompletoPorId(estudianteId);
+        try {
+            Integer estudianteId = consulta.getEstudiante().getId();
+            String telefono = estudianteRepository.obtenerSmsPorId(estudianteId);
+            String nombreCompleto = estudianteRepository.obtenerNombreCompletoPorId(estudianteId);
 
-        String motivo = consulta.getMotivo();
-        String nivel = consulta.getNivel() != null ? consulta.getNivel().name() : "sin definir";
+            String motivo = consulta.getMotivo();
+            String nivel = consulta.getNivel() != null ? consulta.getNivel().name() : "sin definir";
 
-        if (telefono != null && !telefono.trim().isEmpty()) {
-            String mensaje = "Se ha registrado una alerta para " + nombreCompleto +
-                    ". Motivo: " + motivo + ". Nivel: " + nivel + ".";
+            if (telefono != null && !telefono.trim().isEmpty()) {
+                String mensaje = "Se ha registrado una alerta para " + nombreCompleto +
+                        ". Motivo: " + motivo + ". Nivel: " + nivel + ".";
 
-            String resultado = ServicioSms.enviarMensaje(telefono, mensaje);
-            System.out.println(" Resultado envío SMS: " + resultado);
-        } else {
-            System.out.println(" Número de teléfono no disponible para el estudiante.");
+                String resultado = ServicioSms.enviarMensaje(telefono, mensaje);
+                System.out.println(" Resultado envío SMS: " + resultado);
+            } else {
+                System.out.println(" Número de teléfono no disponible para el estudiante.");
+            }
+
+        } catch (Exception e) {
+            System.err.println(" Error al enviar SMS: " + e.getMessage());
         }
-
-    } catch (Exception e) {
-        System.err.println(" Error al enviar SMS: " + e.getMessage());
     }
-}
 
 }

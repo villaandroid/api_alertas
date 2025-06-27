@@ -43,7 +43,8 @@ public class PsicorientadorServiceImpl implements PsicorientadorService {
     @Override
     public Psicorientador actualizar(Integer id, Psicorientador datos) {
         Psicorientador actual = obtenerPorId(id);
-        if (actual == null) return null;
+        if (actual == null)
+            return null;
 
         actual.setTipoDoc(datos.getTipoDoc());
         actual.setNroDoc(datos.getNroDoc());

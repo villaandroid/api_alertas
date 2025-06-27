@@ -16,7 +16,6 @@ public class EstadisticasDTO {
     private long alertasAlto;
     private long alertasModerado;
     private long alertasLeve;
-    private long alertasMejoradas;
     private long alertasSinSeguimiento;
     private double promedioPorMes;
     private double promedioPorEstudiante;

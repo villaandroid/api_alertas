@@ -1,7 +1,9 @@
 package sistema_alertas.Alertas.service;
 
+import sistema_alertas.Alertas.model.Estudiante;
 import sistema_alertas.Alertas.model.Seguimiento;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SeguimientoService {
@@ -16,4 +18,7 @@ public interface SeguimientoService {
 
     void asociarASeguimientoYCita(Integer seguimientoId, Integer citaId);
     public Optional<Seguimiento> obtenerPorId(Integer id);
+
+    public List<Estudiante> obtenerEstudiantesConSeguimientos();
+  
 }

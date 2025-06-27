@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import sistema_alertas.Alertas.model.ObservacionSeguimiento;
 import sistema_alertas.Alertas.service.ObservacionSeguimientoService;
+
 @RestController
 @RequestMapping(value = "/api/observaciones", produces = "application/json")
 @CrossOrigin(origins = "*")
